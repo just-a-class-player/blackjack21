@@ -479,7 +479,10 @@ resetG();
 // ── INIT ───────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    sb = supabase.createClient(SB_URL, SB_KEY);
+    sb = supabase.createClient(SB_URL, SB_KEY, {
+      global: { headers: { 'X-Client-Info': 'blackjack21' } },
+      auth: { persistSession: true, autoRefreshToken: true }
+    });
     const { data:{session} } = await sb.auth.getSession();
     if (session) { await loadUser(session.user); checkResume(); }
     else showScreen('auth');
