@@ -729,7 +729,7 @@ async function doRegister() {
 }
 
 async function doLogout() {
-  if(G.mode&&G.st!=='BET'&&G.st!=='END') await syncRound('p');
+  if(G.mode&&G.st!=='BET'&&G.st!=='END') await saveSessState();
   await sb.auth.signOut();
   CUR={user:null,profile:null,data:null};
   resetG();
@@ -792,7 +792,7 @@ async function saveSessState() {
 }
 
 function buildSessState() {
-  return {deck:G.deck,ph:G.ph,ph2:G.ph2,dh:G.dh,bet:G.bet,bet2:G.bet2,origBet:G.origBet,lastBet:G.lastBet,split:G.split,aHand:G.aHand,splitAce:G.splitAce,h1done:G.h1done,ch1:G.ch1,ch2:G.ch2,insbet:G.insbet,tookIns:G.tookIns,st:G.st,mode:G.mode,bal:G.bal,numDecks:G.numDecks,bjRatio:G.bjRatio,hdTies:G.hdTies,ddRestrict:G.ddRestrict,soft17:G.soft17,surrender:G.surrender,charlie:G.charlie,startBal:G.startBal,sk:G.sk,hist:G.hist,sW:G.sW,sL:G.sL,sBJ:G.sBJ,sR:G.sR,customCfg:G.customCfg};
+  return {deck:G.deck,ph:G.ph,ph2:G.ph2,dh:G.dh,bet:G.bet,bet2:G.bet2,origBet:G.origBet,lastBet:G.lastBet,split:G.split,aHand:G.aHand,splitAce:G.splitAce,h1done:G.h1done,ch1:G.ch1,ch2:G.ch2,insbet:G.insbet,tookIns:G.tookIns,st:G.st,mode:G.mode,bal:G.bal,numDecks:G.numDecks,bjRatio:G.bjRatio,winMult:G.winMult,charlieMult:G.charlieMult,hdTies:G.hdTies,ddRestrict:G.ddRestrict,soft17:G.soft17,surrender:G.surrender,charlie:G.charlie,startBal:G.startBal,sk:G.sk,hist:G.hist,sW:G.sW,sL:G.sL,sBJ:G.sBJ,sR:G.sR,customCfg:G.customCfg};
 }
 
 function clearSess() {
@@ -823,6 +823,8 @@ function resumeGame() {
   updateBadge();
   showScreen('game');
   renderGame();
+  // Caso raro: la sesión se guardó justo en medio del turno del crupier — retomamos el ciclo
+  if(G.st==='DEALER') setTimeout(dealerDraw, 500);
 }
 
 function discardResume() {
@@ -1493,7 +1495,7 @@ function easeOutQuint(t){return 1-Math.pow(1-t,5);}
 function rlSpin(){
   const tot=rlCurrentTotal();
   if(RL.spinning||tot<=0||tot>RL.bal)return;
-  RL.spinning=true;RL.bal-=tot;
+  RL.spinning=true;RL.bal-=tot;RL.curStake=tot;
   document.getElementById('rl-spinbtn').disabled=true;
   document.getElementById('rl-bal').textContent='$'+RL.bal;
   document.getElementById('rl-numchip').style.display='none';
@@ -1513,7 +1515,7 @@ function rlSpin(){
   const ballTurns=10+Math.random()*2;
   const rawBallFinal=-(ballTurns*360);
   const rawMod=((rawBallFinal%360)+360)%360;
-  let diff=(targetBallAngle-rawMod+360)%360;
+  let diff=(rawMod-targetBallAngle+360)%360;
   const ballFinalDeg=rawBallFinal-diff;
 
   const R_OUTER=88,R_INNER=66;
@@ -1563,19 +1565,26 @@ function rlFinishSpin(winNum){
       totalWin+=b.amt+b.amt*ratio;
     }
   });
+  const staked=RL.curStake||0;
+  const net=totalWin-staked; // ganancia/pérdida REAL de la ronda, no solo si alguna ficha pagó algo
 
   RL.spins++;RL.hist.push(winNum);
   if(RL.hist.length>30)RL.hist.shift();
 
-  if(totalWin>0){
+  if(net>0){
     RL.wins++;RL.bal+=totalWin;
-    if(totalWin>RL.maxWin)RL.maxWin=totalWin;
-    document.getElementById('rl-msg').textContent=`¡GANASTE $${totalWin}! — Número ${winNum} ${col==='red'?'🔴':col==='black'?'⚫':'🟢'}`;
+    if(net>RL.maxWin)RL.maxWin=net;
+    document.getElementById('rl-msg').textContent=`¡GANASTE $${net}! — Número ${winNum} ${col==='red'?'🔴':col==='black'?'⚫':'🟢'}`;
     const wrap=document.getElementById('rl-wrap');
     wrap.classList.remove('win');void wrap.offsetWidth;wrap.classList.add('win');
     vib([100,50,100]);sfxWin();
+  }else if(net===0){
+    RL.bal+=totalWin; // te regresan exactamente lo apostado, ni ganas ni pierdes
+    document.getElementById('rl-msg').textContent=`EMPATE — recuperas $${totalWin} — Número ${winNum} ${col==='red'?'🔴':col==='black'?'⚫':'🟢'}`;
+    vib(150);
   }else{
-    document.getElementById('rl-msg').textContent=`Número ${winNum} ${col==='red'?'🔴':col==='black'?'⚫':'🟢'} — Sin premio`;
+    RL.bal+=totalWin; // recupera lo que sí pagó alguna ficha, el resto se pierde
+    document.getElementById('rl-msg').textContent=`Número ${winNum} ${col==='red'?'🔴':col==='black'?'⚫':'🟢'} — Perdiste $${Math.abs(net)}`;
     vib(250);sfxLose();
   }
 
@@ -1592,7 +1601,7 @@ function rlFinishSpin(winNum){
   const upd={
     balance:RL.bal, stats_roulette:CUR.data.stats_roulette, roulette_hist:RL.hist,
     total_games:(CUR.data.total_games||0)+1,
-    total_wins:(CUR.data.total_wins||0)+(totalWin>0?1:0),
+    total_wins:(CUR.data.total_wins||0)+(net>0?1:0),
     highest_balance_ever:newHi,
   };
   CUR.data.highest_balance_ever=newHi;
