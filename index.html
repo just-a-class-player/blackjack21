@@ -70,6 +70,8 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
 .wheel-stage{position:relative;width:230px;height:230px;margin:4px auto 2px;}
 .wheel-outer{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%,#3a2410,#1c1408 70%,#0a0704);box-shadow:0 8px 30px rgba(0,0,0,.7),inset 0 0 0 3px rgba(255,215,0,.25),inset 0 0 20px rgba(0,0,0,.6);}
 .wheel-svg{position:absolute;inset:10px;border-radius:50%;transition:none;filter:drop-shadow(0 4px 14px rgba(0,0,0,.5));}
+@keyframes wedgeGlow{0%,100%{stroke:#000;stroke-width:0.5;}50%{stroke:#ffd700;stroke-width:2.5;}}
+.wedge-win{animation:wedgeGlow .5s ease 4;}
 .wheel-hub{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe36b,#c8940e 60%,#7a5906);box-shadow:0 3px 10px rgba(0,0,0,.5),inset 0 0 0 2px rgba(255,255,255,.2);z-index:5;}
 .ball-orbit{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;}
 .ball{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ccc 60%,#888);box-shadow:0 1px 3px rgba(0,0,0,.6);margin:-4.5px 0 0 -4.5px;}
@@ -1401,7 +1403,7 @@ function rlBuildWheel(){
     const xi0=cx+rInner*Math.cos(toRad(a1)),yi0=cy+rInner*Math.sin(toRad(a1));
     const xi1=cx+rInner*Math.cos(toRad(a0)),yi1=cy+rInner*Math.sin(toRad(a0));
     const col=rlColor(num)==='red'?'#c0182a':rlColor(num)==='black'?'#141414':'#158a45';
-    paths+=`<path d="M${x0.toFixed(2)},${y0.toFixed(2)} A${rOuter},${rOuter} 0 0,1 ${x1.toFixed(2)},${y1.toFixed(2)} L${xi0.toFixed(2)},${yi0.toFixed(2)} A${rInner},${rInner} 0 0,0 ${xi1.toFixed(2)},${yi1.toFixed(2)} Z" fill="${col}" stroke="#000" stroke-width="0.5"/>`;
+    paths+=`<path id="wedge-${num}" data-num="${num}" d="M${x0.toFixed(2)},${y0.toFixed(2)} A${rOuter},${rOuter} 0 0,1 ${x1.toFixed(2)},${y1.toFixed(2)} L${xi0.toFixed(2)},${yi0.toFixed(2)} A${rInner},${rInner} 0 0,0 ${xi1.toFixed(2)},${yi1.toFixed(2)} Z" fill="${col}" stroke="#000" stroke-width="0.5"/>`;
     const ta=a0+RL_SLICE/2,tr=(rOuter+rInner)/2+12;
     const tx=cx+tr*Math.cos(toRad(ta)),ty=cy+tr*Math.sin(toRad(ta));
     paths+=`<text x="${tx.toFixed(2)}" y="${ty.toFixed(2)}" fill="#fff" font-size="7" font-weight="800" text-anchor="middle" dominant-baseline="middle" transform="rotate(${ta+90},${tx.toFixed(2)},${ty.toFixed(2)})">${num}</text>`;
@@ -1489,74 +1491,95 @@ function rlUpdateStatsUI(){
 }
 function rlRenderHist(){document.getElementById('rl-hist').innerHTML=RL.hist.slice(-12).map(n=>`<div class="rl-hchip ${rlColor(n)}">${n}</div>`).join('');}
 
-function easeOutCubic(t){return 1-Math.pow(1-t,3);}
 function easeOutQuint(t){return 1-Math.pow(1-t,5);}
+let RL_ANIMATING=false; // guard extra: nunca dos animaciones corriendo a la vez
 
 function rlSpin(){
   const tot=rlCurrentTotal();
-  if(RL.spinning||tot<=0||tot>RL.bal)return;
-  RL.spinning=true;RL.bal-=tot;RL.curStake=tot;
+  if(RL.spinning||RL_ANIMATING||tot<=0||tot>RL.bal)return;
+  RL.spinning=true;RL_ANIMATING=true;RL.bal-=tot;RL.curStake=tot;
   document.getElementById('rl-spinbtn').disabled=true;
   document.getElementById('rl-bal').textContent='$'+RL.bal;
   document.getElementById('rl-numchip').style.display='none';
   document.getElementById('rl-msg').textContent='Girando...';
+  document.querySelectorAll('.wedge-win').forEach(w=>w.classList.remove('wedge-win'));
   vib(40);sfxSpinWhoosh();
 
+  // El número ganador se decide UNA sola vez, aquí, y es la única fuente de verdad
+  // tanto para lo que se muestra como para el ángulo final de la bola.
   const winNum=RL_ORDER[Math.floor(Math.random()*37)];
   const slotIndex=RL_ORDER.indexOf(winNum);
-  const slotAngle=slotIndex*RL_SLICE;
+  const slotAngle=slotIndex*RL_SLICE; // posición del bolsillo ganador, medida desde "arriba"
 
   const wheelEl=document.getElementById('rl-wheel'),ballEl=document.getElementById('rl-ball');
-  const DUR1=4200,DUR2=1600,TOTAL=DUR1+DUR2;
+  const TOTAL=5800;
+  const DROP_START=0.70;
+
   const wheelTurns=6+Math.random()*2;
   const wheelFinalDeg=wheelTurns*360;
-  const wheelFinalMod=wheelFinalDeg%360;
+  const wheelFinalMod=wheelFinalDeg%360; // wheelFinalDeg siempre positivo, mod simple y seguro
+
+  // Ángulo absoluto (0-360, medido desde el puntero fijo arriba) donde debe quedar
+  // la bola para que visualmente coincida con el bolsillo del número ganador,
+  // una vez la rueda terminó de girar:
   const targetBallAngle=(slotAngle+wheelFinalMod)%360;
-  const ballTurns=10+Math.random()*2;
-  const rawBallFinal=-(ballTurns*360);
-  const rawMod=((rawBallFinal%360)+360)%360;
-  let diff=(rawMod-targetBallAngle+360)%360;
-  const ballFinalDeg=rawBallFinal-diff;
+
+  // Fórmula directa sin restas/módulos encadenados: tomamos N vueltas completas
+  // en sentido contrario (negativo) y le restamos justo lo necesario para que el
+  // residuo final sea EXACTAMENTE targetBallAngle. Matemáticamente no puede fallar.
+  const ballExtraTurns = 10 + Math.floor(Math.random()*3); // entero: 10, 11 o 12
+  const ballFinalDeg = -(360*ballExtraTurns) - (360 - targetBallAngle);
 
   const R_OUTER=88,R_INNER=66;
   let start=null, lastTickAngle=0, bounceTicked=false;
 
+  // Una sola curva de desaceleración continua (sin costuras) para TODO el giro.
+  // El "aterrizaje" de la bola (radio + rebote) es solo un efecto visual encima,
+  // el ángulo NUNCA vuelve a acelerar.
   function frame(ts){
     if(!start)start=ts;
-    const elapsed=ts-start;
-    if(elapsed<=DUR1){
-      const t=elapsed/DUR1,e=easeOutCubic(t);
-      RL.wheelRot=e*(wheelFinalDeg*(DUR1/TOTAL));
-      RL.ballRot=e*(ballFinalDeg*(DUR1/TOTAL));
-      wheelEl.style.transform=`rotate(${RL.wheelRot}deg)`;
-      ballEl.style.transform=`rotate(${RL.ballRot}deg) translateY(-${R_OUTER}px)`;
-      // tick suave cada vez que la bola cruza un bolsillo
-      if(Math.abs(RL.ballRot-lastTickAngle)>RL_SLICE){ lastTickAngle=RL.ballRot; sfxTick(); }
+    const elapsed=Math.min(ts-start, TOTAL);
+    const t=elapsed/TOTAL;
+    const e=easeOutQuint(t);
+
+    RL.wheelRot=e*wheelFinalDeg;
+    RL.ballRot=e*ballFinalDeg;
+
+    let radius=R_OUTER;
+    if(t>DROP_START){
+      const dt=(t-DROP_START)/(1-DROP_START);
+      const de=easeOutQuint(dt);
+      const bounce=Math.sin(dt*Math.PI*3)*(1-dt)*9;
+      radius=R_OUTER-(R_OUTER-R_INNER)*de+bounce;
+      if(!bounceTicked && dt>0.1){ bounceTicked=true; beep(300,.05,'triangle',.09); }
+    }
+
+    wheelEl.style.transform=`rotate(${RL.wheelRot}deg)`;
+    ballEl.style.transform=`rotate(${RL.ballRot}deg) translateY(-${radius}px)`;
+
+    if(Math.abs(RL.ballRot-lastTickAngle)>RL_SLICE){ lastTickAngle=RL.ballRot; sfxTick(); }
+
+    if(elapsed<TOTAL){
       requestAnimationFrame(frame);
-    }else if(elapsed<=TOTAL){
-      const t=(elapsed-DUR1)/DUR2,e=easeOutQuint(t);
-      const wheelBase=wheelFinalDeg*(DUR1/TOTAL),ballBase=ballFinalDeg*(DUR1/TOTAL);
-      RL.wheelRot=wheelBase+e*(wheelFinalDeg-wheelBase);
-      RL.ballRot=ballBase+e*(ballFinalDeg-ballBase);
-      const bounce=Math.sin(t*Math.PI*3)*(1-t)*10;
-      const radius=R_OUTER-(R_OUTER-R_INNER)*e+bounce;
-      wheelEl.style.transform=`rotate(${RL.wheelRot}deg)`;
-      ballEl.style.transform=`rotate(${RL.ballRot}deg) translateY(-${radius}px)`;
-      if(!bounceTicked && t>0.15){ bounceTicked=true; beep(300,.05,'triangle',.09); }
-      requestAnimationFrame(frame);
-    }else{
+    } else {
+      // Posición final EXACTA — se fija una sola vez, nunca más se toca este transform
       wheelEl.style.transform=`rotate(${wheelFinalDeg}deg)`;
       ballEl.style.transform=`rotate(${ballFinalDeg}deg) translateY(-${R_INNER}px)`;
-      rlFinishSpin(winNum);
+      RL_ANIMATING=false;
+      rlFinishSpin(winNum, slotIndex);
     }
   }
   requestAnimationFrame(frame);
 }
 
-function rlFinishSpin(winNum){
+function rlFinishSpin(winNum, slotIndex){
   const col=rlColor(winNum);
   const chip=document.getElementById('rl-numchip');
   chip.textContent=winNum;chip.className='rl-numchip '+col;chip.style.display='flex';
+
+  // Marca visualmente el bolsillo ganador exacto en la rueda (mismo número que el chip)
+  const wedge=document.getElementById('wedge-'+winNum);
+  if(wedge){ wedge.classList.remove('wedge-win'); void wedge.offsetWidth; wedge.classList.add('wedge-win'); }
 
   let totalWin=0;
   Object.entries(RL.bets).forEach(([key,b])=>{
@@ -1594,17 +1617,16 @@ function rlFinishSpin(winNum){
   document.getElementById('rl-spinbtn').disabled=true;
 
   // Fondo universal + marcador (la ruleta SÍ cuenta, comparte banca con Blackjack Normal/Hardcore)
-  CUR.data.balance=RL.bal;
-  CUR.data.stats_roulette={spins:RL.spins,wins:RL.wins,max_win:RL.maxWin};
-  CUR.data.roulette_hist=RL.hist;
   const newHi=Math.max(CUR.data.highest_balance_ever||0, RL.bal);
   const upd={
-    balance:RL.bal, stats_roulette:CUR.data.stats_roulette, roulette_hist:RL.hist,
+    balance:RL.bal,
+    stats_roulette:{spins:RL.spins,wins:RL.wins,max_win:RL.maxWin},
+    roulette_hist:RL.hist,
     total_games:(CUR.data.total_games||0)+1,
     total_wins:(CUR.data.total_wins||0)+(net>0?1:0),
     highest_balance_ever:newHi,
   };
-  CUR.data.highest_balance_ever=newHi;
+  Object.assign(CUR.data, upd); // refleja de inmediato en Perfil/Marcador sin esperar la red
   sb.from('player_data').update(upd).eq('user_id',CUR.user.id);
 
   if(RL.bal<=0){
