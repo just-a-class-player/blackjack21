@@ -56,10 +56,63 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
 .mbtn .dc{font-size:10px;color:rgba(255,255,255,.35);}
 .mbtn.play{border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.04);}
 .mbtn.play .nm{color:var(--gold);}
+.mbtn.rl{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.04);}
+.mbtn.rl .nm{color:#f87171;}
 .mbtn.sc{border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.04);}
 .mbtn.sc .nm{color:#a78bfa;}
 .mbtn.pf{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.04);}
 .mbtn.pf .nm{color:#4ade80;}
+/* ═══ ROULETTE ═══ */
+#s-roulette{padding:6px 8px 14px;gap:8px;}
+.rl-topbar{display:flex;align-items:center;justify-content:space-between;}
+.rl-stats{display:flex;gap:10px;}
+.rl-table-wrap{background:radial-gradient(ellipse 90% 70% at 50% 30%,#1b3a2e 0%,#0d1f18 60%,#06110c 100%);border-radius:20px;border:4px solid #3a2818;box-shadow:0 14px 50px rgba(0,0,0,.7),inset 0 0 60px rgba(0,0,0,.35);padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.wheel-stage{position:relative;width:230px;height:230px;margin:4px auto 2px;}
+.wheel-outer{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%,#3a2410,#1c1408 70%,#0a0704);box-shadow:0 8px 30px rgba(0,0,0,.7),inset 0 0 0 3px rgba(255,215,0,.25),inset 0 0 20px rgba(0,0,0,.6);}
+.wheel-svg{position:absolute;inset:10px;border-radius:50%;transition:none;filter:drop-shadow(0 4px 14px rgba(0,0,0,.5));}
+.wheel-hub{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe36b,#c8940e 60%,#7a5906);box-shadow:0 3px 10px rgba(0,0,0,.5),inset 0 0 0 2px rgba(255,255,255,.2);z-index:5;}
+.ball-orbit{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;}
+.ball{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ccc 60%,#888);box-shadow:0 1px 3px rgba(0,0,0,.6);margin:-4.5px 0 0 -4.5px;}
+.wheel-pointer{position:absolute;top:-6px;left:50%;margin-left:-7px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:12px solid var(--gold);z-index:7;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
+.rl-result{text-align:center;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.rl-numchip{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.5);}
+.rl-numchip.red{background:linear-gradient(145deg,#e53939,#a01717);}
+.rl-numchip.black{background:linear-gradient(145deg,#2c2c2c,#0a0a0a);}
+.rl-numchip.green{background:linear-gradient(145deg,#22c55e,#0d6b32);}
+.rl-msg{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;}
+.rl-hist{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:280px;}
+.rl-hchip{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;}
+.rl-hchip.red{background:#c0182a;}.rl-hchip.black{background:#1a1a2e;}.rl-hchip.green{background:#15803d;}
+/* Betting table */
+.rl-board{width:100%;overflow-x:auto;}
+.rl-grid{display:grid;grid-template-columns:34px repeat(12,1fr);gap:2px;min-width:340px;}
+.rl-cell{background:#178a4c;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;cursor:pointer;padding:7px 2px;position:relative;transition:transform .1s,filter .1s;user-select:none;}
+.rl-cell:active{transform:scale(.93);}
+.rl-cell.red{background:linear-gradient(145deg,#d92929,#961414);}
+.rl-cell.black{background:linear-gradient(145deg,#262626,#0a0a0a);}
+.rl-cell.green{background:linear-gradient(145deg,#22c55e,#0d6b32);grid-row:1/4;}
+.rl-cell.zero{grid-column:1;grid-row:1/4;}
+.rl-cell.outside{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:9px;letter-spacing:.5px;}
+.rl-cell .chipmark{position:absolute;bottom:2px;right:2px;background:var(--gold);color:#0b0d12;font-size:8px;font-weight:900;border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.5);}
+.rl-outside-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;min-width:340px;margin-top:2px;}
+.rl-outside-row2{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;min-width:340px;margin-top:2px;}
+/* Chip selector + controls */
+.rl-chiprow{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;}
+.rl-chip{width:38px;height:38px;border-radius:50%;border:2px dashed rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;cursor:pointer;transition:transform .15s;color:#fff;}
+.rl-chip:active{transform:scale(.9);}
+.rl-chip.sel{border-style:solid;border-color:var(--gold);box-shadow:0 0 12px rgba(255,215,0,.5);transform:scale(1.08);}
+.rl-chip.c5{background:radial-gradient(circle at 35% 30%,#60a5fa,#1e40af);}
+.rl-chip.c10{background:radial-gradient(circle at 35% 30%,#4ade80,#15803d);}
+.rl-chip.c25{background:radial-gradient(circle at 35% 30%,#f87171,#b91c1c);}
+.rl-chip.c50{background:radial-gradient(circle at 35% 30%,#facc15,#a16207);}
+.rl-chip.c100{background:radial-gradient(circle at 35% 30%,#c084fc,#6d28d9);}
+.rl-betbar{display:flex;justify-content:space-between;align-items:center;padding:0 2px;}
+.rl-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+.rl-spin{background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;}
+.rl-clearb{background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);}
+.rl-back2{background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);}
+@keyframes rlWin{0%,100%{box-shadow:0 14px 50px rgba(0,0,0,.7),inset 0 0 60px rgba(0,0,0,.35);}50%{box-shadow:0 0 40px rgba(0,0,0,.5),0 0 50px rgba(255,215,0,.5),inset 0 0 60px rgba(0,0,0,.35);}}
+.rl-table-wrap.win{animation:rlWin .7s ease 2;}
 /* OVERLAYS */
 .ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:14px;}
 .ov.open{display:flex;}
@@ -117,6 +170,7 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
 .mbadge.easy{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.25);}
 .mbadge.hard{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.25);}
 .mbadge.custom{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.25);}
+.mbadge.luck{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.25);}
 .hist{display:flex;justify-content:center;gap:4px;min-height:9px;}
 .dot{width:9px;height:9px;border-radius:50%;}
 .dot.w{background:#4ade80;}.dot.l{background:#f87171;}.dot.p{background:#fbbf24;}.dot.bj{background:var(--gold);box-shadow:0 0 6px rgba(255,215,0,.7);}
@@ -256,18 +310,28 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
   </div>
 </div>
 
-<!-- ══ MENU ══ -->
+<!-- ══ MENU / LOBBY ══ -->
 <div class="screen" id="s-menu">
   <div class="mhdr">
     <div><div class="muname" id="m-un">—</div><div class="mbal" id="m-bal">—</div></div>
-    <button class="mlogout" onclick="doLogout()">Salir ↩</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="mute-btn" onclick="toggleMute()" style="background:none;border:none;font-size:16px;cursor:pointer;">🔊</button>
+      <button class="mlogout" onclick="doLogout()">Salir ↩</button>
+    </div>
   </div>
+  <div class="logo" style="font-size:18px;margin-top:2px;">🎰 CASINO</div>
   <div class="panel" style="gap:10px;">
+    <div class="sec-t">Elige tu juego</div>
     <div class="mgrid">
-      <button class="mbtn play" onclick="openModeOv()"><div class="ico">🎴</div><div class="inf"><div class="nm">JUGAR</div><div class="dc">Elige tu modo</div></div></button>
+      <button class="mbtn play" onclick="openModeOv()"><div class="ico">🂡</div><div class="inf"><div class="nm">BLACKJACK 21</div><div class="dc">Normal · Hardcore · Luck · Custom</div></div></button>
+      <button class="mbtn rl" onclick="openRoulette()"><div class="ico">🎡</div><div class="inf"><div class="nm">RULETA</div><div class="dc">Europea · 37 casillas · Física real</div></div></button>
+    </div>
+    <div class="divider"></div>
+    <div class="mgrid">
       <button class="mbtn sc" onclick="showScores()"><div class="ico">🏆</div><div class="inf"><div class="nm">MARCADOR</div><div class="dc">Rankings globales</div></div></button>
       <button class="mbtn pf" onclick="showProfile()"><div class="ico">📊</div><div class="inf"><div class="nm">MI PERFIL</div><div class="dc">Estadísticas</div></div></button>
     </div>
+    <button class="btn bgh" onclick="recoverBaseFund()" style="margin-top:2px;">↺ Recuperar fondo base ($100)</button>
   </div>
 </div>
 
@@ -279,6 +343,7 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
       <div class="gsi sw"><div class="gsv" id="gs-w">0</div><div class="gsl">WINS</div></div>
       <div class="gsi sl"><div class="gsv" id="gs-l">0</div><div class="gsl">LOSS</div></div>
       <div class="gsi sbj"><div class="gsv" id="gs-bj">0</div><div class="gsl">BJ</div></div>
+      <button class="mute-btn" onclick="toggleMute()" style="background:none;border:none;font-size:14px;cursor:pointer;">🔊</button>
     </div>
   </div>
   <div class="table" id="tbl">
@@ -312,6 +377,53 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
 </div>
 
 <!-- ══ SCORES ══ -->
+<!-- ══ ROULETTE ══ -->
+<div class="screen" id="s-roulette">
+  <div class="rl-topbar">
+    <button class="gback" onclick="leaveRoulette()">← MENÚ</button>
+    <div class="rl-stats">
+      <div class="gsi sw"><div class="gsv" id="rl-w">0</div><div class="gsl">WINS</div></div>
+      <div class="gsi sl"><div class="gsv" id="rl-l">0</div><div class="gsl">SPINS</div></div>
+      <div class="gsi sbj"><div class="gsv" id="rl-big">$0</div><div class="gsl">MAX WIN</div></div>
+      <button class="mute-btn" onclick="toggleMute()" style="background:none;border:none;font-size:14px;cursor:pointer;">🔊</button>
+    </div>
+  </div>
+  <div class="rl-table-wrap" id="rl-wrap">
+    <div class="wheel-stage">
+      <div class="wheel-pointer"></div>
+      <div class="wheel-outer"></div>
+      <svg class="wheel-svg" id="rl-wheel" viewBox="0 0 200 200"></svg>
+      <div class="wheel-hub"></div>
+      <div class="ball-orbit"><div class="ball" id="rl-ball"></div></div>
+    </div>
+    <div class="rl-result">
+      <div class="rl-numchip" id="rl-numchip" style="display:none">0</div>
+      <div class="rl-msg" id="rl-msg">Coloca tus apuestas</div>
+    </div>
+    <div class="rl-hist" id="rl-hist"></div>
+  </div>
+  <div class="mr">
+    <div class="mb"><span class="mlbl">Balance</span><span class="mamt" id="rl-bal">$0</span></div>
+    <div class="mb r"><span class="mlbl">Apostado</span><span class="mamt b" id="rl-totbet">$0</span></div>
+  </div>
+  <div class="rl-board">
+    <div class="rl-grid" id="rl-grid"></div>
+    <div class="rl-outside-row" id="rl-dozens"></div>
+    <div class="rl-outside-row2" id="rl-evenchances"></div>
+  </div>
+  <div class="rl-chiprow">
+    <div class="rl-chip c5 sel" data-v="5" onclick="rlSelChip(5,this)">$5</div>
+    <div class="rl-chip c10" data-v="10" onclick="rlSelChip(10,this)">$10</div>
+    <div class="rl-chip c25" data-v="25" onclick="rlSelChip(25,this)">$25</div>
+    <div class="rl-chip c50" data-v="50" onclick="rlSelChip(50,this)">$50</div>
+    <div class="rl-chip c100" data-v="100" onclick="rlSelChip(100,this)">$100</div>
+  </div>
+  <div class="rl-btns">
+    <button class="gbtn rl-clearb" onclick="rlClearBets()">LIMPIAR</button>
+    <button class="gbtn rl-spin" id="rl-spinbtn" onclick="rlSpin()" style="grid-column:span 2">🎡 GIRAR</button>
+  </div>
+</div>
+
 <div class="screen" id="s-scores">
   <button class="back-btn" onclick="showScreen('menu')">← Menú</button>
   <div class="logo" style="font-size:20px">🏆 MARCADOR</div>
@@ -334,6 +446,7 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
   <div class="mstabs" id="p-mtabs">
     <button class="mstab on" onclick="switchMStat('easy')">Normal</button>
     <button class="mstab" onclick="switchMStat('hard')">Hardcore</button>
+    <button class="mstab" onclick="switchMStat('luck')">Luck</button>
     <button class="mstab" onclick="switchMStat('custom')">Custom</button>
   </div>
   <div class="sgrid" id="p-stats"></div>
@@ -354,28 +467,37 @@ body{background:var(--bg);min-height:100vh;display:flex;align-items:center;justi
     <div class="mrow">
       <div class="mc easy" onclick="selectMode('easy')">
         <div class="mct g">🎯 NORMAL</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">Reglas estándar de casino</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">Fondo universal · cuenta para marcador</div>
         <div class="pills">
-          <span class="pill g">$75 inicio · 2 mazos</span>
+          <span class="pill g">2 mazos</span>
           <span class="pill y">Win 1:1 · BJ 3:2</span>
-          <span class="pill b">Push en empate</span>
+          <span class="pill b">5 cartas ×5</span>
         </div>
       </div>
       <div class="mc hard" onclick="selectMode('hard')">
         <div class="mct r">💀 HARDCORE</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">Casino real, reglas duras</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">Fondo universal · cuenta para marcador</div>
         <div class="pills">
-          <span class="pill r">$50 inicio · 7 mazos</span>
+          <span class="pill r">7 mazos reales</span>
           <span class="pill y">Win 1:1 · BJ 3:2</span>
-          <span class="pill r">Empate = Pierdes</span>
+          <span class="pill b">5 cartas ×5</span>
           <span class="pill r">DD solo 9·10·11</span>
           <span class="pill c">Soft 17 · Surrender</span>
         </div>
       </div>
     </div>
+    <div class="mc hard full" onclick="selectMode('luck')" style="border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.04);">
+      <div class="mct" style="color:#fbbf24;">🍀 LUCK</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;">Banca aislada — no afecta tu fondo real ni el marcador</div>
+      <div class="pills">
+        <span class="pill y">$100 sandbox · 4 mazos</span>
+        <span class="pill r">Win ×4 · BJ ×5</span>
+        <span class="pill r">5 cartas ×10</span>
+      </div>
+    </div>
     <div class="mc cust full" onclick="openCustomOv()">
       <div class="mct p">⚙️ PERSONALIZADO</div>
-      <div class="pills" id="cust-pills"><span class="pill b">Configura tus propias reglas</span></div>
+      <div class="pills" id="cust-pills"><span class="pill b">Configura tus propias reglas — no cuenta para marcador</span></div>
     </div>
     <button class="btn bgh" onclick="closeOv('ov-mode')">Cancelar</button>
   </div>
@@ -451,8 +573,10 @@ function resetG() {
     mode:null, numDecks:2,
     // Payouts
     bjRatio:1.5,  // BJ payout ratio (3:2 = 1.5)
+    winMult:2,    // multiplicador de retorno total en win normal (2 = 1:1)
+    charlieMult:5,// multiplicador de retorno total en 5-card charlie
     hdTies:false, ddRestrict:false, soft17:false, surrender:false, charlie:false,
-    startBal:75,
+    startBal:100,
     // Deck
     deck:[], sfx:false,
     // Hands
@@ -468,7 +592,7 @@ function resetG() {
     st:'BET', flip:false,
     // Session stats
     sW:0, sL:0, sBJ:0, sR:0,
-    bal:75,
+    bal:100,
     hist:[], sk:{t:null,n:0,best:0},
     pPh:0, pPh2:0, pDh:0,
     customCfg:null,
@@ -476,8 +600,35 @@ function resetG() {
 }
 resetG();
 
+// ── SONIDO (Web Audio API, 100% offline, sin archivos externos) ────────────────
+let ACTX=null, MUTED=localStorage.getItem('bj21_mute')==='1';
+function actx(){ if(!ACTX){ try{ACTX=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return ACTX; }
+function beep(freq,dur,type='sine',vol=.14,delay=0){
+  if(MUTED) return;
+  const ctx=actx(); if(!ctx) return;
+  const t0=ctx.currentTime+delay;
+  const osc=ctx.createOscillator(), gain=ctx.createGain();
+  osc.type=type; osc.frequency.setValueAtTime(freq,t0);
+  gain.gain.setValueAtTime(0,t0);
+  gain.gain.linearRampToValueAtTime(vol,t0+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0+dur+0.02);
+}
+function sfxDeal(){ beep(320,.06,'triangle',.10); }
+function sfxChip(){ beep(700,.05,'square',.06); }
+function sfxClick(){ beep(500,.04,'square',.05); }
+function sfxWin(){ beep(523,.1,'sine',.13); beep(659,.1,'sine',.13,.1); beep(784,.16,'sine',.15,.2); }
+function sfxBJ(){ beep(523,.09,'sine',.13); beep(659,.09,'sine',.13,.08); beep(784,.09,'sine',.14,.16); beep(1046,.22,'sine',.16,.24); }
+function sfxLose(){ beep(220,.22,'sawtooth',.10); beep(160,.28,'sawtooth',.09,.12); }
+function sfxTick(){ beep(900,.025,'square',.045); }
+function sfxSpinWhoosh(){ if(MUTED)return; const ctx=actx(); if(!ctx)return; const t0=ctx.currentTime; const osc=ctx.createOscillator(),gain=ctx.createGain(); osc.type='sawtooth'; osc.frequency.setValueAtTime(90,t0); osc.frequency.exponentialRampToValueAtTime(340,t0+.5); gain.gain.setValueAtTime(0,t0); gain.gain.linearRampToValueAtTime(.05,t0+.05); gain.gain.exponentialRampToValueAtTime(.0001,t0+.6); osc.connect(gain); gain.connect(ctx.destination); osc.start(t0); osc.stop(t0+.62); }
+function toggleMute(){ MUTED=!MUTED; localStorage.setItem('bj21_mute',MUTED?'1':'0'); document.querySelectorAll('.mute-btn').forEach(b=>b.textContent=MUTED?'🔇':'🔊'); if(!MUTED)beep(600,.05,'sine',.08); }
+
 // ── INIT ───────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
+  document.querySelectorAll('.mute-btn').forEach(b=>b.textContent=MUTED?'🔇':'🔊');
+  document.addEventListener('click', ()=>{ if(actx()&&actx().state==='suspended') actx().resume(); }, {once:true});
   try {
     sb = supabase.createClient(SB_URL, SB_KEY, {
       global: { headers: { 'X-Client-Info': 'blackjack21' } },
@@ -505,13 +656,25 @@ function showScreen(n) {
 function updateMenuUI() {
   if (!CUR.profile||!CUR.data) return;
   document.getElementById('m-un').textContent = CUR.profile.username;
-  const m = CUR.data.last_mode||'easy';
-  const b = getBal(m);
-  document.getElementById('m-bal').textContent = `$${b} · ${modeLabel(m)}`;
+  document.getElementById('m-bal').textContent = `$${CUR.data.balance ?? 100} · Fondo universal`;
 }
-function modeLabel(m){ return m==='easy'?'Normal':m==='hard'?'Hardcore':'Custom'; }
-function getBal(m){ if(!CUR.data)return 0; return m==='hard'?CUR.data.balance_hard:m==='custom'?CUR.data.balance_custom:CUR.data.balance_easy; }
-function setBal(m,v){ if(!CUR.data)return; if(m==='hard')CUR.data.balance_hard=v; else if(m==='custom')CUR.data.balance_custom=v; else CUR.data.balance_easy=v; }
+function modeLabel(m){ return m==='easy'?'Normal':m==='hard'?'Hardcore':m==='luck'?'Luck':'Custom'; }
+// Normal y Hardcore comparten el mismo dinero universal (también usado en Ruleta).
+// Custom y Luck usan su propia banca de juego, aislada — no afecta el fondo real ni el marcador.
+function getBal(m){ if(!CUR.data)return 0; if(m==='easy'||m==='hard')return CUR.data.balance??100; if(m==='custom')return CUR.data.balance_custom??75; if(m==='luck')return CUR.data.balance_luck??100; return CUR.data.balance??100; }
+function setBal(m,v){ if(!CUR.data)return; if(m==='easy'||m==='hard')CUR.data.balance=v; else if(m==='custom')CUR.data.balance_custom=v; else if(m==='luck')CUR.data.balance_luck=v; }
+function isRanked(m){ return m==='easy'||m==='hard'; } // solo estos modos cuentan para marcador/dinero real
+
+// ── BOTÓN RECUPERAR FONDO BASE ($100 universal) ────────────────────────────────
+async function recoverBaseFund(){
+  if(!CUR.user) return;
+  if(!confirm('¿Reiniciar tu fondo universal a $100? Esto solo afecta Normal, Hardcore y Ruleta.')) return;
+  CUR.data.balance = 100;
+  if(G.mode==='easy'||G.mode==='hard'){ G.bal=100; renderGame(); }
+  sb.from('player_data').update({balance:100}).eq('user_id',CUR.user.id);
+  updateMenuUI();
+  sfxChip();
+}
 
 // ── AUTH ───────────────────────────────────────────────────────────────────────
 function swAuth(t) {
@@ -603,18 +766,20 @@ async function syncRound(result) {
   else cs.pushes=(cs.pushes||0)+1;
   if(result==='bj') cs.blackjacks=(cs.blackjacks||0)+1;
   cs.best_streak=Math.max(cs.best_streak||0, G.sk.best);
-  const bf=m==='hard'?'balance_hard':m==='custom'?'balance_custom':'balance_easy';
-  const newHi=Math.max(CUR.data.highest_balance_ever||0, G.bal);
-  const upd={
-    [sk]:cs,[bf]:G.bal,last_mode:m,
-    total_games:(CUR.data.total_games||0)+1,
-    total_wins:(CUR.data.total_wins||0)+(result==='w'||result==='bj'?1:0),
-    total_losses:(CUR.data.total_losses||0)+(result==='l'?1:0),
-    total_blackjacks:(CUR.data.total_blackjacks||0)+(result==='bj'?1:0),
-    best_streak_overall:Math.max(CUR.data.best_streak_overall||0, G.sk.best),
-    highest_balance_ever:newHi,
-    session_active:false, session_state:null,
-  };
+  const bf=(m==='easy'||m==='hard')?'balance':m==='custom'?'balance_custom':'balance_luck';
+  let upd={ [sk]:cs, [bf]:G.bal, last_mode:m, session_active:false, session_state:null };
+  // Solo Normal y Hardcore alimentan el marcador global y el fondo real
+  if(isRanked(m)){
+    const newHi=Math.max(CUR.data.highest_balance_ever||0, G.bal);
+    upd = { ...upd,
+      total_games:(CUR.data.total_games||0)+1,
+      total_wins:(CUR.data.total_wins||0)+(result==='w'||result==='bj'?1:0),
+      total_losses:(CUR.data.total_losses||0)+(result==='l'?1:0),
+      total_blackjacks:(CUR.data.total_blackjacks||0)+(result==='bj'?1:0),
+      best_streak_overall:Math.max(CUR.data.best_streak_overall||0, G.sk.best),
+      highest_balance_ever:newHi,
+    };
+  }
   sb.from('player_data').update(upd).eq('user_id',CUR.user.id).then(()=>{Object.assign(CUR.data,upd);});
 }
 
@@ -622,7 +787,7 @@ async function saveSessState() {
   if(!CUR.user||G.st==='BET'||G.st==='END') return;
   const s=buildSessState();
   localStorage.setItem('bj21_sess',JSON.stringify(s));
-  const bf=G.mode==='hard'?'balance_hard':G.mode==='custom'?'balance_custom':'balance_easy';
+  const bf=(G.mode==='easy'||G.mode==='hard')?'balance':G.mode==='custom'?'balance_custom':'balance_luck';
   sb.from('player_data').update({[bf]:G.bal,last_mode:G.mode,session_active:true,session_state:s}).eq('user_id',CUR.user.id).then(({data})=>{if(data&&CUR.data)Object.assign(CUR.data,{[bf]:G.bal,session_active:true,session_state:s});});
 }
 
@@ -682,15 +847,24 @@ function applyModeParams(m, cc=null) {
   G.mode=m;
   if(m==='easy'){
     G.numDecks=2; G.bjRatio=1.5; G.hdTies=false; G.ddRestrict=false;
-    G.soft17=false; G.surrender=false; G.charlie=false; G.startBal=75;
+    G.soft17=false; G.surrender=false; G.charlie=true; G.charlieMult=5;
+    G.winMult=2; G.startBal=100;
   } else if(m==='hard'){
-    G.numDecks=7; G.bjRatio=1.5; G.hdTies=true; G.ddRestrict=true;
-    G.soft17=true; G.surrender=true; G.charlie=false; G.startBal=50;
+    // Hardcore nerfeado: quitamos "empate=pierdes" (era demasiado favorable a la casa).
+    // Sigue siendo difícil: 7 mazos reales, DD solo 9-10-11, dealer pide en soft17, surrender disponible.
+    G.numDecks=7; G.bjRatio=1.5; G.hdTies=false; G.ddRestrict=true;
+    G.soft17=true; G.surrender=true; G.charlie=true; G.charlieMult=5;
+    G.winMult=2; G.startBal=100;
+  } else if(m==='luck'){
+    // Modo Luck: banca aislada (no cuenta para marcador ni fondo real), multiplicadores altísimos.
+    G.numDecks=4; G.bjRatio=4; G.hdTies=false; G.ddRestrict=false;
+    G.soft17=false; G.surrender=false; G.charlie=true; G.charlieMult=10;
+    G.winMult=4; G.startBal=100;
   } else if(m==='custom'&&cc){
     G.numDecks=+cc.dk; G.bjRatio=+cc.bj; G.hdTies=cc.ti==='lose';
     G.ddRestrict=cc.dd==='911'; G.soft17=cc.s17==='hit';
-    G.surrender=cc.sur==='yes'; G.charlie=cc.c5==='yes';
-    G.startBal=+cc.bal; G.customCfg=cc;
+    G.surrender=cc.sur==='yes'; G.charlie=cc.c5==='yes'; G.charlieMult=2;
+    G.winMult=2; G.startBal=+cc.bal; G.customCfg=cc;
   }
 }
 
@@ -713,7 +887,7 @@ function selectMode(m, cc=null) {
 function updateBadge() {
   const mb=document.getElementById('mbadge');
   if(!mb) return;
-  const lbl={easy:'NORMAL',hard:'HARDCORE',custom:'CUSTOM'};
+  const lbl={easy:'NORMAL',hard:'HARDCORE',custom:'CUSTOM',luck:'LUCK'};
   mb.textContent=lbl[G.mode]||'NORMAL';
   mb.className='mbadge '+(G.mode||'easy');
 }
@@ -872,6 +1046,7 @@ function vib(p){if(navigator.vibrate)navigator.vibrate(p);}
 // ── KEYPAD ─────────────────────────────────────────────────────────────────────
 function kp(k){
   if(G.st!=='BET')return;
+  sfxClick();
   if(k==='C')G.betStr='';
   else if(k==='M')G.betStr=String(G.bal);
   else if(k==='H'){G.bet=Math.floor(G.bal/2);G.betStr=String(G.bet);renderGame();return;}
@@ -908,7 +1083,7 @@ function startRound(){
   G.split=false;G.aHand=0;G.splitAce=false;G.h1done=false;
   G.insbet=0;G.tookIns=false;G.ch1=false;G.ch2=false;
   G.pPh=0;G.pPh2=0;G.pDh=0;
-  G.st='PLAY';setMsg('','');vib(30);
+  G.st='PLAY';setMsg('','');vib(30);sfxDeal();
   renderGame();
   saveSessState();
   if(G.dh[1].r==='A'){G.st='INS';renderGame();return;}
@@ -925,12 +1100,12 @@ function takeIns(yes){
     G.flip=true;
     flipHole(()=>{
       G.flip=false;G.st='END';rDh();rDv();
-      if(G.tookIns){G.bal+=G.insbet*3;if(pBJ){G.bal+=G.bet;endRound('p','EMPATE + SEGURO ✓','p');}else endRound('p','DEALER BJ — SEGURO ✓','p');}
-      else{if(pBJ){G.bal+=G.bet;endRound('p','EMPATE — BJ AMBOS','p');}else endRound('l','BLACKJACK DEL CRUPIER','l');}
+      if(G.tookIns){G.bal+=G.insbet*3;if(pBJ){G.bal+=G.bet;endRound('p','EMPATE + SEGURO ✓','p');}else{sfxWin();endRound('p','DEALER BJ — SEGURO ✓','p');}}
+      else{if(pBJ){G.bal+=G.bet;endRound('p','EMPATE — BJ AMBOS','p');}else{sfxLose();endRound('l','BLACKJACK DEL CRUPIER','l');}}
     });
     return;
   }
-  if(pBJ){G.st='END';G.bal+=bjPay(G.bet);endRound('bj',`♠ BLACKJACK — 3:2 ♠`,'bj');return;}
+  if(pBJ){G.st='END';G.bal+=bjPay(G.bet);sfxBJ();endRound('bj',`♠ BLACKJACK — 3:2 ♠`,'bj');return;}
   G.st='PLAY';renderGame();
 }
 
@@ -940,12 +1115,12 @@ function resolveNat(pBJ,dBJ){
   flipHole(()=>{
     G.flip=false;G.st='END';rDh();rDv();
     if(pBJ&&dBJ){
-      if(G.hdTies)endRound('l','EMPATE = PIERDES','l');
+      if(G.hdTies){sfxLose();endRound('l','EMPATE = PIERDES','l');}
       else{G.bal+=G.bet;endRound('p','EMPATE — BJ AMBOS','p');}
     } else if(pBJ){
-      G.bal+=bjPay(G.bet);endRound('bj',`♠ BLACKJACK — 3:2 ♠`,'bj');
+      G.bal+=bjPay(G.bet);sfxBJ();endRound('bj',`♠ BLACKJACK — 3:2 ♠`,'bj');
     } else {
-      endRound('l','BLACKJACK DEL CRUPIER','l');
+      sfxLose();endRound('l','BLACKJACK DEL CRUPIER','l');
     }
   });
 }
@@ -956,15 +1131,15 @@ function setCH(h){if(G.split&&G.aHand===1)G.ph2=h;else G.ph=h;}
 
 function doHit(){
   if(G.st!=='PLAY'||G.splitAce)return;
-  vib(25);
+  vib(25);sfxDeal();
   const h=[...getCH(),popCard()];setCH(h);
   const isH2=G.split&&G.aHand===1;
   if(isH2)G.pPh2=G.ph2.length-1;else G.pPh=G.ph.length-1;
   renderGame();
   const t=total(getCH());
-  // 5-card Charlie
+  // 5-card Charlie (multiplicador según el modo)
   if(G.charlie&&getCH().length>=5&&t<=21){
-    if(!G.split){setTimeout(()=>{G.st='END';G.bal+=G.bet*2;endRound('w','¡5 CARTAS — 2:1!','bj');},350);}
+    if(!G.split){setTimeout(()=>{G.st='END';G.bal+=G.bet*G.charlieMult;sfxBJ();endRound('w',`¡5 CARTAS — SE QUINTUPLICA! ×${G.charlieMult}`,'bj');},350);}
     else{if(isH2)G.ch2=true;else G.ch1=true;setTimeout(doStand,400);}
     return;
   }
@@ -1036,9 +1211,9 @@ function dealerDraw(){
 function pyRes(h,b,charlie){
   const pt=total(h),dt=total(G.dh);
   if(pt>21)return{r:'l',g:0};
-  if(charlie)return{r:'w',g:b*2};
-  if(dt>21)return{r:'w',g:b*2};
-  if(pt>dt)return{r:'w',g:b*2};
+  if(charlie)return{r:'w',g:b*G.charlieMult};
+  if(dt>21)return{r:'w',g:b*G.winMult};
+  if(pt>dt)return{r:'w',g:b*G.winMult};
   if(pt===dt)return G.hdTies?{r:'l',g:0}:{r:'p',g:b};
   return{r:'l',g:0};
 }
@@ -1052,16 +1227,16 @@ function resolveGame(){
     const anyW=r1.r==='w'||r2.r==='w',allL=r1.r==='l'&&r2.r==='l';
     const cls=anyW?'w':allL?'l':'p';
     const over=anyW?'w':allL?'l':'p';
-    if(anyW){glow('w');vib([100,50,100]);}else if(allL)vib(300);
+    if(anyW){glow('w');vib([100,50,100]);sfxWin();}else if(allL){vib(300);sfxLose();}
     endRound(over,`M1 ${ic[r1.r]}  —  M2 ${ic[r2.r]}`,cls);
   } else {
     const pt=total(G.ph),dt=total(G.dh);
-    if(dt>21){G.bal+=G.bet*2;glow('w');vib([100,50,100]);endRound('w','¡GANASTE! — DEALER BUST','w');}
-    else if(pt>dt){G.bal+=G.bet*2;glow('w');vib([100,50,100]);endRound('w','¡GANASTE!','w');}
+    if(dt>21){G.bal+=G.bet*G.winMult;glow('w');vib([100,50,100]);sfxWin();endRound('w','¡GANASTE! — DEALER BUST','w');}
+    else if(pt>dt){G.bal+=G.bet*G.winMult;glow('w');vib([100,50,100]);sfxWin();endRound('w','¡GANASTE!','w');}
     else if(pt===dt){
-      if(G.hdTies){vib(200);endRound('l','EMPATE = PIERDES','l');}
+      if(G.hdTies){vib(200);sfxLose();endRound('l','EMPATE = PIERDES','l');}
       else{G.bal+=G.bet;endRound('p','EMPATE — PUSH','p');}
-    } else {vib(300);endRound('l','PERDISTE','l');}
+    } else {vib(300);sfxLose();endRound('l','PERDISTE','l');}
   }
 }
 
@@ -1075,7 +1250,7 @@ function endRound(result, msg, cls){
   if(result==='bj'){G.sBJ++;glow('bj');vib([120,60,120,60,120]);}
   G.lastBet=G.origBet;
   setBal(G.mode,G.bal);
-  if(CUR.data&&G.bal>(CUR.data.highest_balance_ever||0))CUR.data.highest_balance_ever=G.bal;
+  if(isRanked(G.mode)&&CUR.data&&G.bal>(CUR.data.highest_balance_ever||0))CUR.data.highest_balance_ever=G.bal;
   renderGame();
   clearSess();
   syncRound(result);
@@ -1105,7 +1280,8 @@ function showBroke(){
 function doReset(){
   closeOv('ov-broke');
   G.bal=G.startBal;setBal(G.mode,G.startBal);
-  sb.from('player_data').update({[G.mode==='hard'?'balance_hard':G.mode==='custom'?'balance_custom':'balance_easy']:G.startBal}).eq('user_id',CUR.user.id);
+  const field=G.mode==='easy'||G.mode==='hard'?'balance':G.mode==='custom'?'balance_custom':'balance_luck';
+  sb.from('player_data').update({[field]:G.startBal}).eq('user_id',CUR.user.id);
   newRound();
 }
 
@@ -1124,13 +1300,13 @@ async function loadLB(tab){
   document.querySelectorAll('#lb-tabs .tab').forEach((t,i)=>t.classList.toggle('on',i===tab));
   document.getElementById('lb-list').innerHTML='<div class="loading">Cargando...</div>';
   if(!lbCache){
-    const {data:pds}=await sb.from('player_data').select('user_id,balance_easy,balance_hard,balance_custom,total_games,total_wins,total_losses,total_blackjacks,best_streak_overall,highest_balance_ever');
+    const {data:pds}=await sb.from('player_data').select('user_id,balance,total_games,total_wins,total_losses,total_blackjacks,best_streak_overall,highest_balance_ever');
     const {data:prs}=await sb.from('profiles').select('id,username');
     if(!pds||!prs){document.getElementById('lb-list').innerHTML='<div class="lbempty">Error al cargar</div>';return;}
     lbCache=pds.map(pd=>{
       const pr=prs.find(p=>p.id===pd.user_id);
       const wr=pd.total_games>0?Math.round(pd.total_wins/pd.total_games*100):0;
-      const bestBal=Math.max(pd.balance_easy||0,pd.balance_hard||0,pd.balance_custom||0);
+      const bestBal=pd.balance||0;
       return{...pd,username:pr?.username||'?',wr,bestBal};
     });
   }
@@ -1178,26 +1354,259 @@ function showProfile(){
 }
 function switchMStat(m){
   curMStat=m;
-  document.querySelectorAll('.mstab').forEach((t,i)=>t.classList.toggle('on',['easy','hard','custom'][i]===m));
+  document.querySelectorAll('.mstab').forEach((t,i)=>t.classList.toggle('on',['easy','hard','luck','custom'][i]===m));
   if(!CUR.data)return;
   const s=CUR.data['stats_'+m]||{games:0,wins:0,losses:0,pushes:0,blackjacks:0,best_streak:0};
   const b=getBal(m);
   const wr=s.games>0?Math.round((s.wins||0)/s.games*100):0;
+  const rankedNote=isRanked(m)?'':' (no cuenta para marcador)';
   document.getElementById('p-stats').innerHTML=`
     <div class="sbox gold"><div class="sv">$${b}</div><div class="sl">Balance actual</div></div>
-    <div class="sbox"><div class="sv">$${CUR.data.highest_balance_ever||0}</div><div class="sl">Record histórico</div></div>
+    <div class="sbox"><div class="sv">$${isRanked(m)?(CUR.data.highest_balance_ever||0):'—'}</div><div class="sl">Record histórico</div></div>
     <div class="sbox"><div class="sv">${s.games||0}</div><div class="sl">Partidas</div></div>
     <div class="sbox green"><div class="sv">${s.wins||0}</div><div class="sl">Victorias</div></div>
     <div class="sbox red"><div class="sv">${s.losses||0}</div><div class="sl">Derrotas</div></div>
     <div class="sbox"><div class="sv">${s.pushes||0}</div><div class="sl">Empates</div></div>
     <div class="sbox blue"><div class="sv">${s.blackjacks||0}</div><div class="sl">Blackjacks</div></div>
     <div class="sbox purple"><div class="sv">${s.best_streak||0}</div><div class="sl">Mejor racha</div></div>
-    <div class="sbox full"><div class="sv">${wr}%</div><div class="sl">Win rate — ${modeLabel(m)}</div></div>`;
+    <div class="sbox full"><div class="sv">${wr}%</div><div class="sl">Win rate — ${modeLabel(m)}${rankedNote}</div></div>`;
 }
 
 // ── THEMES ─────────────────────────────────────────────────────────────────────
 function setTheme(t){localStorage.setItem('bj21_theme',t);applyTheme(t);document.querySelectorAll('.thopt').forEach(e=>e.classList.remove('sel'));const el=document.getElementById('th-'+t);if(el)el.classList.add('sel');}
 function applyTheme(t){document.body.className='';if(t==='blue')document.body.classList.add('theme-blue');else if(t==='red')document.body.classList.add('theme-red');else if(t==='dark')document.body.classList.add('theme-dark');}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════ RULETA EUROPEA ═══════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+
+const RL_ORDER=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+const RL_RED=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+function rlColor(n){if(n===0)return'green';return RL_RED.has(n)?'red':'black';}
+const RL_SLICE=360/37;
+
+let RL={bal:0,bets:{},chipVal:5,spinning:false,wins:0,spins:0,maxWin:0,hist:[],wheelRot:0,ballRot:0};
+
+function rlBuildWheel(){
+  const svg=document.getElementById('rl-wheel');
+  const cx=100,cy=100,rOuter=98,rInner=58;
+  let paths='';
+  RL_ORDER.forEach((num,i)=>{
+    const a0=i*RL_SLICE-90-RL_SLICE/2,a1=a0+RL_SLICE;
+    const toRad=d=>d*Math.PI/180;
+    const x0=cx+rOuter*Math.cos(toRad(a0)),y0=cy+rOuter*Math.sin(toRad(a0));
+    const x1=cx+rOuter*Math.cos(toRad(a1)),y1=cy+rOuter*Math.sin(toRad(a1));
+    const xi0=cx+rInner*Math.cos(toRad(a1)),yi0=cy+rInner*Math.sin(toRad(a1));
+    const xi1=cx+rInner*Math.cos(toRad(a0)),yi1=cy+rInner*Math.sin(toRad(a0));
+    const col=rlColor(num)==='red'?'#c0182a':rlColor(num)==='black'?'#141414':'#158a45';
+    paths+=`<path d="M${x0.toFixed(2)},${y0.toFixed(2)} A${rOuter},${rOuter} 0 0,1 ${x1.toFixed(2)},${y1.toFixed(2)} L${xi0.toFixed(2)},${yi0.toFixed(2)} A${rInner},${rInner} 0 0,0 ${xi1.toFixed(2)},${yi1.toFixed(2)} Z" fill="${col}" stroke="#000" stroke-width="0.5"/>`;
+    const ta=a0+RL_SLICE/2,tr=(rOuter+rInner)/2+12;
+    const tx=cx+tr*Math.cos(toRad(ta)),ty=cy+tr*Math.sin(toRad(ta));
+    paths+=`<text x="${tx.toFixed(2)}" y="${ty.toFixed(2)}" fill="#fff" font-size="7" font-weight="800" text-anchor="middle" dominant-baseline="middle" transform="rotate(${ta+90},${tx.toFixed(2)},${ty.toFixed(2)})">${num}</text>`;
+  });
+  paths+=`<circle cx="${cx}" cy="${cy}" r="${rInner-2}" fill="#3a2410"/>`;
+  svg.innerHTML=paths;
+}
+
+function rlBuildBoard(){
+  const grid=document.getElementById('rl-grid');
+  let html=`<div class="rl-cell zero green" data-bet="n0" onclick="rlPlaceBet('n0',[0])">0</div>`;
+  for(let row=3;row>=1;row--){
+    for(let col=1;col<=12;col++){
+      const num=(col-1)*3+row,c=rlColor(num);
+      html+=`<div class="rl-cell ${c}" data-bet="n${num}" onclick="rlPlaceBet('n${num}',[${num}])">${num}</div>`;
+    }
+  }
+  grid.innerHTML=html;
+  document.getElementById('rl-dozens').innerHTML=`
+    <div class="rl-cell outside" data-bet="d1" onclick="rlPlaceBet('d1',rlRange(1,12))">1ª DOCENA</div>
+    <div class="rl-cell outside" data-bet="d2" onclick="rlPlaceBet('d2',rlRange(13,24))">2ª DOCENA</div>
+    <div class="rl-cell outside" data-bet="d3" onclick="rlPlaceBet('d3',rlRange(25,36))">3ª DOCENA</div>`;
+  document.getElementById('rl-evenchances').innerHTML=`
+    <div class="rl-cell outside" data-bet="low" onclick="rlPlaceBet('low',rlRange(1,18))">1-18</div>
+    <div class="rl-cell outside" data-bet="even" onclick="rlPlaceBet('even',rlEvens())">PAR</div>
+    <div class="rl-cell outside red" data-bet="red" onclick="rlPlaceBet('red',rlReds())">ROJO</div>
+    <div class="rl-cell outside black" data-bet="black" onclick="rlPlaceBet('black',rlBlacks())">NEGRO</div>
+    <div class="rl-cell outside" data-bet="odd" onclick="rlPlaceBet('odd',rlOdds())">IMPAR</div>
+    <div class="rl-cell outside" data-bet="high" onclick="rlPlaceBet('high',rlRange(19,36))">19-36</div>`;
+}
+function rlRange(a,b){const r=[];for(let i=a;i<=b;i++)r.push(i);return r;}
+function rlReds(){return[...RL_RED];}
+function rlBlacks(){const r=[];for(let i=1;i<=36;i++)if(!RL_RED.has(i))r.push(i);return r;}
+function rlEvens(){const r=[];for(let i=2;i<=36;i+=2)r.push(i);return r;}
+function rlOdds(){const r=[];for(let i=1;i<=36;i+=2)r.push(i);return r;}
+function rlPayout(key){if(key.startsWith('n'))return 35;if(key.startsWith('d'))return 2;return 1;}
+
+function rlSelChip(v,el){RL.chipVal=v;document.querySelectorAll('.rl-chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');sfxClick();}
+
+function rlCurrentTotal(){return Object.values(RL.bets).reduce((s,b)=>s+b.amt,0);}
+function rlPlaceBet(key,nums){
+  if(RL.spinning)return;
+  if(rlCurrentTotal()+RL.chipVal>RL.bal)return;
+  if(!RL.bets[key])RL.bets[key]={amt:0,nums};
+  RL.bets[key].amt+=RL.chipVal;
+  vib(20);sfxChip();rlRenderBets();
+}
+function rlRenderBets(){
+  document.querySelectorAll('.rl-cell').forEach(c=>{
+    const k=c.dataset.bet,ex=c.querySelector('.chipmark');
+    if(ex)ex.remove();
+    if(RL.bets[k]&&RL.bets[k].amt>0){
+      const m=document.createElement('div');
+      m.className='chipmark';m.textContent=RL.bets[k].amt>=1000?Math.round(RL.bets[k].amt/1000)+'k':RL.bets[k].amt;
+      c.appendChild(m);
+    }
+  });
+  const tot=rlCurrentTotal();
+  document.getElementById('rl-totbet').textContent='$'+tot;
+  document.getElementById('rl-bal').textContent='$'+RL.bal;
+  document.getElementById('rl-spinbtn').disabled=tot<=0||tot>RL.bal;
+}
+function rlClearBets(){if(RL.spinning)return;RL.bets={};rlRenderBets();}
+
+function openRoulette(){
+  if(!CUR.data)return;
+  RL.bal=CUR.data.balance??100;
+  if(RL.bal<=0){RL.bal=100;CUR.data.balance=100;}
+  RL.bets={};
+  const rs=CUR.data.stats_roulette||{spins:0,wins:0,max_win:0};
+  RL.wins=rs.wins||0;RL.spins=rs.spins||0;RL.maxWin=rs.max_win||0;
+  RL.hist=CUR.data.roulette_hist||[];
+  if(!document.getElementById('rl-wheel').innerHTML)rlBuildWheel();
+  if(!document.getElementById('rl-grid').innerHTML)rlBuildBoard();
+  document.getElementById('rl-numchip').style.display='none';
+  document.getElementById('rl-msg').textContent='Coloca tus apuestas';
+  rlUpdateStatsUI();rlRenderBets();rlRenderHist();
+  showScreen('roulette');
+}
+function leaveRoulette(){if(RL.spinning)return;showScreen('menu');}
+function rlUpdateStatsUI(){
+  document.getElementById('rl-w').textContent=RL.wins;
+  document.getElementById('rl-l').textContent=RL.spins;
+  document.getElementById('rl-big').textContent='$'+RL.maxWin;
+}
+function rlRenderHist(){document.getElementById('rl-hist').innerHTML=RL.hist.slice(-12).map(n=>`<div class="rl-hchip ${rlColor(n)}">${n}</div>`).join('');}
+
+function easeOutCubic(t){return 1-Math.pow(1-t,3);}
+function easeOutQuint(t){return 1-Math.pow(1-t,5);}
+
+function rlSpin(){
+  const tot=rlCurrentTotal();
+  if(RL.spinning||tot<=0||tot>RL.bal)return;
+  RL.spinning=true;RL.bal-=tot;
+  document.getElementById('rl-spinbtn').disabled=true;
+  document.getElementById('rl-bal').textContent='$'+RL.bal;
+  document.getElementById('rl-numchip').style.display='none';
+  document.getElementById('rl-msg').textContent='Girando...';
+  vib(40);sfxSpinWhoosh();
+
+  const winNum=RL_ORDER[Math.floor(Math.random()*37)];
+  const slotIndex=RL_ORDER.indexOf(winNum);
+  const slotAngle=slotIndex*RL_SLICE;
+
+  const wheelEl=document.getElementById('rl-wheel'),ballEl=document.getElementById('rl-ball');
+  const DUR1=4200,DUR2=1600,TOTAL=DUR1+DUR2;
+  const wheelTurns=6+Math.random()*2;
+  const wheelFinalDeg=wheelTurns*360;
+  const wheelFinalMod=wheelFinalDeg%360;
+  const targetBallAngle=(slotAngle+wheelFinalMod)%360;
+  const ballTurns=10+Math.random()*2;
+  const rawBallFinal=-(ballTurns*360);
+  const rawMod=((rawBallFinal%360)+360)%360;
+  let diff=(targetBallAngle-rawMod+360)%360;
+  const ballFinalDeg=rawBallFinal-diff;
+
+  const R_OUTER=88,R_INNER=66;
+  let start=null, lastTickAngle=0, bounceTicked=false;
+
+  function frame(ts){
+    if(!start)start=ts;
+    const elapsed=ts-start;
+    if(elapsed<=DUR1){
+      const t=elapsed/DUR1,e=easeOutCubic(t);
+      RL.wheelRot=e*(wheelFinalDeg*(DUR1/TOTAL));
+      RL.ballRot=e*(ballFinalDeg*(DUR1/TOTAL));
+      wheelEl.style.transform=`rotate(${RL.wheelRot}deg)`;
+      ballEl.style.transform=`rotate(${RL.ballRot}deg) translateY(-${R_OUTER}px)`;
+      // tick suave cada vez que la bola cruza un bolsillo
+      if(Math.abs(RL.ballRot-lastTickAngle)>RL_SLICE){ lastTickAngle=RL.ballRot; sfxTick(); }
+      requestAnimationFrame(frame);
+    }else if(elapsed<=TOTAL){
+      const t=(elapsed-DUR1)/DUR2,e=easeOutQuint(t);
+      const wheelBase=wheelFinalDeg*(DUR1/TOTAL),ballBase=ballFinalDeg*(DUR1/TOTAL);
+      RL.wheelRot=wheelBase+e*(wheelFinalDeg-wheelBase);
+      RL.ballRot=ballBase+e*(ballFinalDeg-ballBase);
+      const bounce=Math.sin(t*Math.PI*3)*(1-t)*10;
+      const radius=R_OUTER-(R_OUTER-R_INNER)*e+bounce;
+      wheelEl.style.transform=`rotate(${RL.wheelRot}deg)`;
+      ballEl.style.transform=`rotate(${RL.ballRot}deg) translateY(-${radius}px)`;
+      if(!bounceTicked && t>0.15){ bounceTicked=true; beep(300,.05,'triangle',.09); }
+      requestAnimationFrame(frame);
+    }else{
+      wheelEl.style.transform=`rotate(${wheelFinalDeg}deg)`;
+      ballEl.style.transform=`rotate(${ballFinalDeg}deg) translateY(-${R_INNER}px)`;
+      rlFinishSpin(winNum);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function rlFinishSpin(winNum){
+  const col=rlColor(winNum);
+  const chip=document.getElementById('rl-numchip');
+  chip.textContent=winNum;chip.className='rl-numchip '+col;chip.style.display='flex';
+
+  let totalWin=0;
+  Object.entries(RL.bets).forEach(([key,b])=>{
+    if(b.nums.includes(winNum)){
+      const ratio=rlPayout(key);
+      totalWin+=b.amt+b.amt*ratio;
+    }
+  });
+
+  RL.spins++;RL.hist.push(winNum);
+  if(RL.hist.length>30)RL.hist.shift();
+
+  if(totalWin>0){
+    RL.wins++;RL.bal+=totalWin;
+    if(totalWin>RL.maxWin)RL.maxWin=totalWin;
+    document.getElementById('rl-msg').textContent=`¡GANASTE $${totalWin}! — Número ${winNum} ${col==='red'?'🔴':col==='black'?'⚫':'🟢'}`;
+    const wrap=document.getElementById('rl-wrap');
+    wrap.classList.remove('win');void wrap.offsetWidth;wrap.classList.add('win');
+    vib([100,50,100]);sfxWin();
+  }else{
+    document.getElementById('rl-msg').textContent=`Número ${winNum} ${col==='red'?'🔴':col==='black'?'⚫':'🟢'} — Sin premio`;
+    vib(250);sfxLose();
+  }
+
+  RL.bets={};RL.spinning=false;
+  rlRenderBets();rlRenderHist();rlUpdateStatsUI();
+  document.getElementById('rl-bal').textContent='$'+RL.bal;
+  document.getElementById('rl-spinbtn').disabled=true;
+
+  // Fondo universal + marcador (la ruleta SÍ cuenta, comparte banca con Blackjack Normal/Hardcore)
+  CUR.data.balance=RL.bal;
+  CUR.data.stats_roulette={spins:RL.spins,wins:RL.wins,max_win:RL.maxWin};
+  CUR.data.roulette_hist=RL.hist;
+  const newHi=Math.max(CUR.data.highest_balance_ever||0, RL.bal);
+  const upd={
+    balance:RL.bal, stats_roulette:CUR.data.stats_roulette, roulette_hist:RL.hist,
+    total_games:(CUR.data.total_games||0)+1,
+    total_wins:(CUR.data.total_wins||0)+(totalWin>0?1:0),
+    highest_balance_ever:newHi,
+  };
+  CUR.data.highest_balance_ever=newHi;
+  sb.from('player_data').update(upd).eq('user_id',CUR.user.id);
+
+  if(RL.bal<=0){
+    setTimeout(()=>{
+      document.getElementById('rl-msg').textContent='SIN FICHAS — se reinicia tu fondo universal a $100';
+      RL.bal=100;CUR.data.balance=100;
+      sb.from('player_data').update({balance:100}).eq('user_id',CUR.user.id);
+      document.getElementById('rl-bal').textContent='$100';
+    },1200);
+  }
+}
 </script>
 </body>
 </html>
